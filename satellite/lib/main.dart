@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
 import 'package:satellite/UI/SingleTask.dart';
+import 'package:satellite/UI/catalog.dart';
+import 'package:satellite/func/bluetooth.dart';
 
 import 'UI/infoPage.dart';
-import 'func/httpreq.dart';
 
 List<String> itemList = [
   'Item 1',
@@ -56,12 +57,12 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    _initializeData();
+    // _initializeData();
   }
-  Future<void> _initializeData() async {
-    await getSatelliteInfo();
-    // You can navigate to another screen or perform other actions after the async operation completes.
-  }
+  // Future<void> _initializeData() async {
+  //   await getSatelliteInfo();
+  //   // You can navigate to another screen or perform other actions after the async operation completes.
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -76,21 +77,22 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         )),
         actions: [
-          PopupMenuButton<String>(
-            onSelected: (newValue) {
-              setState(() {
-                selectedDropdownItem = newValue;
-              });
-            },
-            itemBuilder: (BuildContext context) {
-              return dropdownItems.map((item) {
-                return PopupMenuItem<String>(
-                  value: item,
-                  child: Text(item),
-                );
-              }).toList();
-            },
-          ),
+          // PopupMenuButton<String>(
+          //   onSelected: (newValue) {
+          //     setState(() {
+          //       selectedDropdownItem = newValue;
+          //     });
+          //   },
+          //   itemBuilder: (BuildContext context) {
+          //     return dropdownItems.map((item) {
+          //       return PopupMenuItem<String>(
+          //         value: item,
+          //         child: Text(item),
+          //       );
+          //     }).toList();
+          //   },
+          // ),
+          Bluetooth(),
           const SizedBox(width: 10),
         ],
       ),
@@ -143,46 +145,10 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             // const AnimatedStaggeredList(),
-            const SizedBox(height: 30),
+            const SizedBox(height: 10),
             const SizedBox(
               height: 671.2727-152,
-              child: SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
-                  child: Column(
-                    children: [
-                      SingleTask(
-                        title: "Item-1",
-                        text: "ast",
-                        img: "images/rocket.png",
-                      ),
-                      SingleTask(
-                        title: "Item-2",
-                        text: "ast",
-                        img: "images/rocket.png",
-                      ),
-                      SingleTask(
-                        title: "Item-3",
-                        text: "ast",
-                        img: "images/rocket.png",
-                      ),
-                      SingleTask(
-                        title: "Item-1",
-                        text: "ast",
-                        img: "images/rocket.png",
-                      ),
-                      SingleTask(
-                        title: "Item-5",
-                        text: "astro",
-                        img: "images/rocket.png",
-                      ),
-                      SingleTask(
-                        title: "Item-5",
-                        text: "astro",
-                        img: "images/rocket.png",
-                      ),
-                    ],
-                  ),
-              ),
+              child: MyWidget(),
             )
           ],
         ),
