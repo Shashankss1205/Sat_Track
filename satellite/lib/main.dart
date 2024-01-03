@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
-import 'package:satellite/UI/SingleTask.dart';
 import 'package:satellite/UI/catalog.dart';
 import 'package:satellite/func/bluetooth.dart';
-
+import 'package:permission_handler/permission_handler.dart';
 import 'UI/infoPage.dart';
 
-List<String> itemList = [
-  'Item 1',
-  'Item 2',
-  'Item 3',
-  // Add more items as needed
-];
+// List<String> itemList = [
+//   'Item 1',
+//   'Item 2',
+//   'Item 3',
+//   // Add more items as needed
+// ];
 
 void main() {
   runApp(const MyApp());
@@ -37,7 +37,28 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         brightness: Brightness.light,
       ),
-      home: const MyHomePage(),
+      // home: const MyHomePage(),
+    home: FutureBuilder(
+      future: FlutterBluetoothSerial.instance.requestEnable(),
+      builder: (context, future) {
+        if (future.connectionState == ConnectionState.waiting) {
+        return Scaffold(
+          body: Container(
+            height: double.infinity,
+            child: const Center(
+              child: Icon(
+                Icons.bluetooth_disabled,
+                size: 200.0,
+                color: Colors.blue,
+                ),
+              ),
+            ),
+          );
+        } else {
+        return MyHomePage();
+        }
+      },
+      ),
     );
   }
 }
@@ -76,24 +97,10 @@ class _MyHomePageState extends State<MyHomePage> {
             fontSize: 30,
           ),
         )),
-        actions: [
-          // PopupMenuButton<String>(
-          //   onSelected: (newValue) {
-          //     setState(() {
-          //       selectedDropdownItem = newValue;
-          //     });
-          //   },
-          //   itemBuilder: (BuildContext context) {
-          //     return dropdownItems.map((item) {
-          //       return PopupMenuItem<String>(
-          //         value: item,
-          //         child: Text(item),
-          //       );
-          //     }).toList();
-          //   },
-          // ),
-          Bluetooth(),
-          const SizedBox(width: 10),
+        actions: const [
+          // Bluetooth(),
+          Icon(Icons.bluetooth),
+          SizedBox(width: 10),
         ],
       ),
       body: Padding(
