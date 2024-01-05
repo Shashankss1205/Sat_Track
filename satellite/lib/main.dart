@@ -3,6 +3,7 @@ import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
 import 'package:satellite/UI/catalog.dart';
+import 'package:satellite/func/blue.dart';
 import 'package:satellite/func/bluetooth.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'UI/infoPage.dart';
@@ -27,7 +28,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       getPages: [
         GetPage(name: '/', page: () => const MyHomePage()), // Define your routes using GetPage
-        GetPage(name: '/second', page: () => SecondPage()),
+        GetPage(name: '/second', page: () => Blue()),
       ],
       debugShowCheckedModeBanner: false,
       title: 'Astro Satellite',
@@ -97,9 +98,20 @@ class _MyHomePageState extends State<MyHomePage> {
             fontSize: 30,
           ),
         )),
-        actions: const [
+        actions: [
           // Bluetooth(),
-          Icon(Icons.bluetooth),
+          Container(
+            margin: const EdgeInsets.only(top: 50),
+            padding: const EdgeInsets.all(5),
+            child: ElevatedButton.icon(
+              onPressed: () {
+                // Replace 'AnotherPage' with the actual name of your other page
+                Navigator.push(context, MaterialPageRoute(builder: (context) => Blue()));
+              },
+              icon: Icon(Icons.bluetooth),
+              label: Text('second'),
+            ),
+          ),
           SizedBox(width: 10),
         ],
       ),

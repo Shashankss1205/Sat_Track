@@ -2,6 +2,7 @@
   import 'package:flutter/material.dart';
   import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
   import 'package:satellite/func/device.dart';
+  import 'package:permission_handler/permission_handler.dart';
 
   class SelectBondedDevicePage extends StatefulWidget {
     /// If true, on page start there is performed discovery upon the bonded devices.
@@ -26,28 +27,65 @@
     BluetoothDevice device;
     _DeviceAvailability availability;
     int? rssi;
+    var address;
 
-    _DeviceWithAvailability(super.address, this.device, this.availability, [this.rssi]);
+    _DeviceWithAvailability(this.address, this.device, this.availability, [this.rssi]) : super(address: address
+    );
   }
 
   class _SelectBondedDevicePage extends State<SelectBondedDevicePage> {
-    List<_DeviceWithAvailability> devices;
+    List<_DeviceWithAvailability>? devices;
 
     // Availability
-    StreamSubscription<BluetoothDiscoveryResult> _discoveryStreamSubscription;
-    bool _isDiscovering;
+    late StreamSubscription<BluetoothDiscoveryResult> _discoveryStreamSubscription;
+    late bool _isDiscovering;
 
     _SelectBondedDevicePage();
-
-    @override
-    void initState() {
-      super.initState();
-
+    void _initializeDevices() {
       _isDiscovering = widget.checkAvailability;
 
       if (_isDiscovering) {
         _startDiscovery();
       }
+
+      // Fetch bonded devices
+      FlutterBluetoothSerial.instance
+          .getBondedDevices()
+          .then((List<BluetoothDevice> bondedDevices) {
+        setState(() {
+          devices = bondedDevices
+              .map((device) => _DeviceWithAvailability(
+            device.address,
+            device,
+            widget.checkAvailability
+                ? _DeviceAvailability.maybe
+                : _DeviceAvailability.yes,
+          ))
+              .toList();
+        });
+      });
+    }
+    Future<void> requestBluetoothPermissions() async {
+      // Request BLUETOOTH_CONNECT permission
+      var permissionStatus = await Permission.bluetoothConnect.request();
+      if (permissionStatus == PermissionStatus.granted) {
+        // Permission granted, proceed with Bluetooth operations
+        _initializeDevices();
+      } else {
+        // Handle permission denial
+        // You might want to display an error message or prompt the user to enable the permission
+      }
+    }
+    @override
+    void initState() {
+      super.initState();
+      requestBluetoothPermissions();
+      _isDiscovering = widget.checkAvailability;
+
+      if (_isDiscovering) {
+        _startDiscovery();
+      }
+
 
       // Setup a list of the bonded devices
       FlutterBluetoothSerial.instance
@@ -81,7 +119,7 @@
       _discoveryStreamSubscription =
           FlutterBluetoothSerial.instance.startDiscovery().listen((r) {
             setState(() {
-              Iterator i = devices.iterator;
+              Iterator i = devices!.iterator;
               while (i.moveNext()) {
                 var device = i.current;
                 if (device.device == r.device) {
@@ -109,7 +147,7 @@
 
     @override
     Widget build(BuildContext context) {
-      List<BluetoothDeviceListEntry> list = devices
+      List<BluetoothDeviceListEntry> list = devices!
           .map(
             (_device) => BluetoothDeviceListEntry(
           device: _device.device,

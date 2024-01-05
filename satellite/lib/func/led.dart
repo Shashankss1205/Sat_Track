@@ -121,45 +121,24 @@ class _ChatPage extends State<ChatPage> {
       body: SafeArea(
         child: Column(
           children: <Widget>[
-            // Container(
-            //   margin: const EdgeInsets.only(top: 50),
-            //   padding: const EdgeInsets.all(5),
-            //   width: double.infinity,
-            //   child: SfSlider(
-            //     min: 0.0,
-            //     max: 180.0,
-            //     value: _value,
-            //     interval: 30,
-            //     stepSize: 30.0,
-            //     showTicks: true,
-            //     showLabels: true,
-            //     showTooltip: true,
-            //     showDivisors: true,
-            //     minorTicksPerInterval: 1,
-            //     onChanged: (dynamic value) {
-            //       if (isConnected) {
-            //         setState(() {
-            //           _value = value;
-            //         });
-            //         if (_value == 0) {
-            //           _sendMessage('0');
-            //         } else if (_value == 30) {
-            //           _sendMessage('1');
-            //         } else if (_value == 60) {
-            //           _sendMessage('2');
-            //         } else if (_value == 90) {
-            //           _sendMessage('3');
-            //         } else if (_value == 120) {
-            //           _sendMessage('4');
-            //         } else if (_value == 150) {
-            //           _sendMessage('5');
-            //         } else if (_value == 180) {
-            //           _sendMessage('6');
-            //         }
-            //       }
-            //     },
-            //   ),
-            // ),
+            Container(
+              margin: const EdgeInsets.only(top: 50),
+              padding: const EdgeInsets.all(5),
+              child: TextField(
+                decoration: const InputDecoration(
+                  hintText: 'Enter your message',
+                  border: OutlineInputBorder(),
+                ),
+                onSubmitted: (message) {
+                  if (isConnected) {
+                    _sendMessage(message);
+                  } else {
+                    // Handle the case where the connection is not established
+                    // You might show an error message or prompt the user to try again
+                  }
+                },
+              ),
+            ),
             Flexible(
               child: ListView(
                   padding: const EdgeInsets.all(12.0),
