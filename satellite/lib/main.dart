@@ -4,7 +4,6 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
 import 'package:satellite/UI/catalog.dart';
 import 'package:satellite/func/blue.dart';
-import 'package:satellite/func/bluetooth.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'UI/infoPage.dart';
 
@@ -28,7 +27,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       getPages: [
         GetPage(name: '/', page: () => const MyHomePage()), // Define your routes using GetPage
-        GetPage(name: '/second', page: () => Blue()),
+        GetPage(name: '/second', page: () => SecondPage()),
       ],
       debugShowCheckedModeBanner: false,
       title: 'Astro Satellite',
@@ -79,12 +78,12 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    // _initializeData();
+    _initializeData();
   }
-  // Future<void> _initializeData() async {
-  //   await getSatelliteInfo();
-  //   // You can navigate to another screen or perform other actions after the async operation completes.
-  // }
+  Future<void> _initializeData() async {
+    await Permission.bluetoothScan.request().isGranted;
+    // You can navigate to another screen or perform other actions after the async operation completes.
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -100,18 +99,18 @@ class _MyHomePageState extends State<MyHomePage> {
         )),
         actions: [
           // Bluetooth(),
-          Container(
-            margin: const EdgeInsets.only(top: 50),
-            padding: const EdgeInsets.all(5),
-            child: ElevatedButton.icon(
-              onPressed: () {
-                // Replace 'AnotherPage' with the actual name of your other page
-                Navigator.push(context, MaterialPageRoute(builder: (context) => Blue()));
-              },
-              icon: Icon(Icons.bluetooth),
-              label: Text('second'),
-            ),
-          ),
+          // Container(
+          //   margin: const EdgeInsets.only(top: 50),
+          //   padding: const EdgeInsets.all(5),
+          //   child: ElevatedButton.icon(
+          //     onPressed: () {
+          //       // Replace 'AnotherPage' with the actual name of your other page
+          //       Navigator.push(context, MaterialPageRoute(builder: (context) => Blue()));
+          //     },
+          //     icon: Icon(Icons.bluetooth),
+          //     label: Text('second'),
+          //   ),
+          // ),
           SizedBox(width: 10),
         ],
       ),

@@ -4,12 +4,11 @@ import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
-// import 'package:syncfusion_flutter_sliders/sliders.dart';
 
 class ChatPage extends StatefulWidget {
   final BluetoothDevice server;
-
-  const ChatPage({super.key, required this.server});
+  final az,el;
+  const ChatPage({super.key, required this.server, required this.az, required this.el});
 
   @override
   _ChatPage createState() => _ChatPage();
@@ -41,7 +40,7 @@ class _ChatPage extends State<ChatPage> {
   @override
   void initState() {
     super.initState();
-
+    _sendMessage("${widget.az},${widget.el}");
     BluetoothConnection.toAddress(widget.server.address).then((_connection) {
       print('Connected to the device');
       connection = _connection;
@@ -121,6 +120,18 @@ class _ChatPage extends State<ChatPage> {
       body: SafeArea(
         child: Column(
           children: <Widget>[
+            Center(
+                child:Text("The Azimuthal Angle is ${widget.az}",
+              style: const TextStyle(color: Colors.deepOrange, fontSize: 20,fontWeight: FontWeight.bold),
+            )
+            ),
+            const SizedBox(height: 20,),
+            Center(
+              child:Text("The Elevation Angle is ${widget.el}",
+                style: const TextStyle(color: Colors.deepOrange, fontSize: 20,fontWeight: FontWeight.bold),
+            )
+    ),
+            const SizedBox(height: 20,),
             Container(
               margin: const EdgeInsets.only(top: 50),
               padding: const EdgeInsets.all(5),
@@ -138,6 +149,7 @@ class _ChatPage extends State<ChatPage> {
                   }
                 },
               ),
+              // child: Text(widget.az ),
             ),
             Flexible(
               child: ListView(
@@ -170,7 +182,7 @@ class _ChatPage extends State<ChatPage> {
                   child: IconButton(
                       icon: const Icon(Icons.send),
                       onPressed: isConnected
-                          ? () => _sendMessage(textEditingController.text)
+                          ? () => _sendMessage("${widget.az},${widget.el}\r\n")
                           : null),
                 ),
               ],
@@ -234,7 +246,7 @@ class _ChatPage extends State<ChatPage> {
     text = text.trim();
     textEditingController.clear();
 
-    if (text.length > 0) {
+    if (text.isNotEmpty) {
       try {
         connection.output.add(utf8.encode("$text\r\n"));
         await connection.output.allSent;
